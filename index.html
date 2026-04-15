@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GlucoPredict — Glucose Spike Forecaster</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+
+    <header class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">GlucoPredict</span>
+      <span class="brand-sub">— tomorrow's spike forecast</span>
+    </header>
+
+    <main>
+      <h1>Will your glucose spike tomorrow?</h1>
+      <p class="subtitle">
+        Enter your blood glucose readings from the past two days — before and after
+        each meal. The model will predict whether a spike is likely tomorrow.
+      </p>
+      <p class="unit-hint">All values in mg/dL</p>
+
+      <div class="days-grid">
+
+        <!-- Day 1 -->
+        <div class="day-card">
+          <div class="day-title">Day 1 — two days ago</div>
+
+          <div class="meal-section">
+            <div class="meal-label">
+              <span class="meal-icon icon-bf"></span> Breakfast
+            </div>
+            <div class="input-row">
+              <div class="input-wrap">
+                <span>Before</span>
+                <input type="number" id="d1_bf_pre" placeholder="e.g. 95" min="40" max="400" />
+              </div>
+              <div class="input-wrap">
+                <span>After</span>
+                <input type="number" id="d1_bf_post" placeholder="e.g. 140" min="40" max="400" />
+              </div>
+            </div>
+          </div>
+
+          <div class="meal-section">
+            <div class="meal-label">
+              <span class="meal-icon icon-lu"></span> Lunch
+            </div>
+            <div class="input-row">
+              <div class="input-wrap">
+                <span>Before</span>
+                <input type="number" id="d1_lu_pre" placeholder="e.g. 90" min="40" max="400" />
+              </div>
+              <div class="input-wrap">
+                <span>After</span>
+                <input type="number" id="d1_lu_post" placeholder="e.g. 130" min="40" max="400" />
+              </div>
+            </div>
+          </div>
+
+          <div class="meal-section last">
+            <div class="meal-label">
+              <span class="meal-icon icon-di"></span> Dinner
+            </div>
+            <div class="input-row">
+              <div class="input-wrap">
+                <span>Before</span>
+                <input type="number" id="d1_di_pre" placeholder="e.g. 88" min="40" max="400" />
+              </div>
+              <div class="input-wrap">
+                <span>After</span>
+                <input type="number" id="d1_di_post" placeholder="e.g. 145" min="40" max="400" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day 2 -->
+        <div class="day-card">
+          <div class="day-title">Day 2 — yesterday</div>
+
+          <div class="meal-section">
+            <div class="meal-label">
+              <span class="meal-icon icon-bf"></span> Breakfast
+            </div>
+            <div class="input-row">
+              <div class="input-wrap">
+                <span>Before</span>
+                <input type="number" id="d2_bf_pre" placeholder="e.g. 97" min="40" max="400" />
+              </div>
+              <div class="input-wrap">
+                <span>After</span>
+                <input type="number" id="d2_bf_post" placeholder="e.g. 138" min="40" max="400" />
+              </div>
+            </div>
+          </div>
+
+          <div class="meal-section">
+            <div class="meal-label">
+              <span class="meal-icon icon-lu"></span> Lunch
+            </div>
+            <div class="input-row">
+              <div class="input-wrap">
+                <span>Before</span>
+                <input type="number" id="d2_lu_pre" placeholder="e.g. 92" min="40" max="400" />
+              </div>
+              <div class="input-wrap">
+                <span>After</span>
+                <input type="number" id="d2_lu_post" placeholder="e.g. 128" min="40" max="400" />
+              </div>
+            </div>
+          </div>
+
+          <div class="meal-section last">
+            <div class="meal-label">
+              <span class="meal-icon icon-di"></span> Dinner
+            </div>
+            <div class="input-row">
+              <div class="input-wrap">
+                <span>Before</span>
+                <input type="number" id="d2_di_pre" placeholder="e.g. 91" min="40" max="400" />
+              </div>
+              <div class="input-wrap">
+                <span>After</span>
+                <input type="number" id="d2_di_post" placeholder="e.g. 150" min="40" max="400" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .days-grid -->
+
+      <p class="error-msg" id="error-msg" role="alert" aria-live="polite">
+        Please fill in all 12 readings before predicting.
+      </p>
+
+      <button class="predict-btn" id="predict-btn" onclick="predict()">
+        Predict tomorrow's glucose spike
+      </button>
+
+      <!-- Result -->
+      <div class="result-card" id="result-card" aria-live="polite">
+        <div class="result-header">
+          <span class="result-badge" id="result-badge"></span>
+          <span class="result-title" id="result-title"></span>
+        </div>
+        <div class="prob-row">
+          <span class="prob-label">Spike probability</span>
+          <div class="prob-bar-bg">
+            <div class="prob-bar-fill" id="prob-fill" style="width:0%"></div>
+          </div>
+          <span class="prob-val" id="prob-val"></span>
+        </div>
+        <div class="prob-row">
+          <span class="prob-label">No spike</span>
+          <div class="prob-bar-bg">
+            <div class="prob-bar-fill fill-safe" id="safe-fill" style="width:0%"></div>
+          </div>
+          <span class="prob-val" id="safe-val"></span>
+        </div>
+        <p class="note">
+          This prediction is based on a logistic regression model trained on glucose
+          patterns. It is not medical advice — consult a healthcare professional for
+          clinical decisions.
+        </p>
+      </div>
+
+    </main>
+
+    <footer class="footer">
+      <p>GlucoPredict &mdash; glucose spike forecaster &nbsp;|&nbsp; Not a medical device</p>
+      <h5>Developed y </h5>
+      <p>Eazhilan &mdash; Kabilan M V &nbsp;|&nbsp; Karthik </p>
+    </footer>
+
+  </div><!-- .page -->
+
+  <script src="model.js"></script>
+</body>
+</html>
